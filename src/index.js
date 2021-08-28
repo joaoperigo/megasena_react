@@ -1,91 +1,77 @@
 import React from 'react'
-import  ReactDOM  from 'react-dom'
-
+import ReactDOM from 'react-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import Button from 'react-bootstrap/Button'
+import Card from 'react-bootstrap/Card'
+import Col from 'react-bootstrap/Col'
+import Container from 'react-bootstrap/Container'
+import ListGroup from 'react-bootstrap/ListGroup'
+import Row from 'react-bootstrap/Row'
 
-class App extends React.Component{
-    
+export default class App extends React.Component {
+
     constructor(props){
         super(props)
         this.state = {
-            n1: null,
-            n2: null,
-            n3: null,
-            n4: null,
-            n5: null,
-            n6: null,
+            jogo: null
         }
     }
-    
-    checaRepeticao = (numeros) => {
-      let checa=0
-      let aux = this.getRandomInt(6)
-      for(let i=0; i<numeros.length; i++) {
-        if( numeros[i]===aux ) {
-          ++checa
-          break
+
+    gerarJogo = () => {
+        let aux = []
+        while (aux.length < 6){
+            let n = Math.round(Math.random() * 60) + 1;
+            if (!aux.includes(n)) aux.push(n)
         }
-      }
-      if(checa>0) this.checaRepeticao(numeros)
-      numeros.push(aux)
+        this.setState({jogo: aux})
+        //não!!!
+        //this.state = {jogo: aux}
     }
 
-    getRandomInt = (max) => { 
-      return Math.floor(Math.random() * max + 1);
-    }
-
-    obterN = () => { //qdo usuario clica
-      let numeros = []
-      for( let i=0; i<6; i++) {
-        this.checaRepeticao(numeros)
-      }
-      numeros.sort()
-      this.setState({
-          n1: numeros[0] + ' - ',
-          n2: numeros[1] + ' - ',
-          n3: numeros[2] + ' - ',
-          n4: numeros[3] + ' - ',
-          n5: numeros[4] + ' - ',
-          n6: numeros[5]   
-        }
-      )
-    }
-
-
-
-    render(){
-        // this.obterLocalizacao()
+    render() {
         return (
-            <div className="container mt-2">
-                <div className="row justify-content-center">
-                    <div className="col-md-8">
-                        <div className="card">
-                            <div className="card-body">
-                                <div className="d-flex align-items-center border rounded mb-2" style={{height: '6rem'}}>
-                                    <p className="w-75 ms-3 text-center fs-1">
-                                      {this.state.n1}
-                                      {this.state.n2}
-                                      {this.state.n3}
-                                      {this.state.n4}
-                                      {this.state.n5}
-                                      {this.state.n6}
-                                    </p>
-                                </div>
-                                
-                                <button onClick={this.obterN} className="btn btn-outline-primary w-100 mt-2">
-                                        Qual a minha estação?
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        )   
+            <Container className="mt-2">
+                <Row className="justify-content-center">
+                    <Col md={8}>
+                        <Card>
+                            <Card.Header as="h3" className="text-center">
+                                Mega Sena
+                            </Card.Header>
+                            <Card.Body
+                                className="d-flex flex-column justify-content-center align-items-center"
+                                style={{height: '8rem'}}>
+
+                                {
+                                    this.state.jogo ?
+                                    <ListGroup horizontal>
+                                        {
+                                            this.state.jogo.map ((numero) => (
+                                                <ListGroup.Item variant="success" className="item d-flex justify-content-center align-items-center">
+                                                    {numero}
+                                                </ListGroup.Item>
+                                            ))
+                                        }
+                                    </ListGroup>
+                                    :
+                                    <Card.Text className="fs-2">
+                                        Clique para obter seu jogo
+                                    </Card.Text>
+                                }
+
+                                <Button variant="outline-success" className="w-100 mt-2" onClick={this.gerarJogo}>
+                                    Gerar jogo
+                                </Button>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                </Row>
+            </Container>
+        )
     }
 }
-
 
 ReactDOM.render(
     <App />,
     document.querySelector('#root')
 )
+
